@@ -11,4 +11,3 @@ add_subdirectory(singleton)
 add_subdirectory(expensive_resource)
 add_subdirectory(thread_manager)
 add_subdirectory(resource_manager)
-
