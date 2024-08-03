@@ -4,9 +4,12 @@
 #include "class_factory.h"
 
 #define REGISTER_CLASS(className) \
-    DECLARE_GLOBAL(className, __COUNTER__)
+    REGISTER_CLASS_INTER(className, __COUNTER__)
+
+#define REGISTER_CLASS_INTER(className, index) \
+    DECLARE_GLOBAL(className, index)
 
 #define DECLARE_GLOBAL(className, index) \
-    static ClassFactory<className, index> global_##className##index##ClassFactory;
+    static ClassFactory<className, index> global_##index;
 
 #endif // MACRO_H

@@ -13,6 +13,6 @@ public:
     }
 };
 
-
 REGISTER_CLASS(DerivedA)
+
 #endif // DERIVED_A_H

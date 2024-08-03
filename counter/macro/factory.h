@@ -7,7 +7,6 @@
 #include <functional>
 #include <memory> // for std::shared_ptr
 
-
 #include "base.h"
 
 class Factory {
