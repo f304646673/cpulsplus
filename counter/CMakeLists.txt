@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(optional)
+project(counter)
 
 # Set the root directory to the current directory
 set(ROOT_DIR ${CMAKE_SOURCE_DIR})
