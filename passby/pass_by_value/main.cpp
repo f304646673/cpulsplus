@@ -18,6 +18,7 @@ public:
 
     Custom(Custom&& custom) : value(custom.value) {
         std::cout << "Move constructor Custom(" << custom.value << "). this = " << this << " from " << &custom << std::endl;
+        custom.value = 0;
     }
 
     Custom& operator=(Custom&& custom) {
@@ -48,21 +49,20 @@ private:
     int value;
 };
 
-// #define print_stack_frame_addresses(func_name) \
-//     void* frame_address = __builtin_frame_address(0); \
-//     std::cout << "Function: " << func_name << std::endl;  \
-//     std::cout << "Frame address (FP): " << frame_address << std::endl; \
-//     std::cout << std::endl;
-
-Custom craeteCustom() {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = Custom(1);
-    return custom;
+void func(Custom custom) {
+    std::cout << "func(Custom custom) custom = " << custom << " from " << &custom << std::endl;
 }
 
 int main(int argc, char* argv[]) {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = craeteCustom();
-    // std::cout << "main custom = " << custom << ".Address is " << &custom << std::endl;
+    Custom custom(1);
+    std::cout << "build custom in main" << std::endl;
+
+    std::cout << "call func(custom)" << std::endl;
+    func(custom);
+
+    std::cout << "call func(std::move(custom))" << std::endl;
+    func(std::move(custom));
+
+    std::cout << "main end" << std::endl;
     return 0;
 }

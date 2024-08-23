@@ -48,21 +48,29 @@ private:
     int value;
 };
 
-// #define print_stack_frame_addresses(func_name) \
-//     void* frame_address = __builtin_frame_address(0); \
-//     std::cout << "Function: " << func_name << std::endl;  \
-//     std::cout << "Frame address (FP): " << frame_address << std::endl; \
-//     std::cout << std::endl;
-
-Custom craeteCustom() {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = Custom(1);
-    return custom;
+void func(Custom& custom) {
+    std::cout << "func(Custom custom) custom = " << custom << " from " << &custom << std::endl;
 }
 
+void func_const(const Custom& custom) {
+    std::cout << "func_const(const Custom& custom) custom = " << custom << " from " << &custom << std::endl;
+}
+
+
 int main(int argc, char* argv[]) {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = craeteCustom();
-    // std::cout << "main custom = " << custom << ".Address is " << &custom << std::endl;
+    Custom custom(1);
+    Custom& custom2 = custom;
+    const Custom& custom3 = custom;
+    func(custom);
+    func(custom2);
+    // func(custom3);  // error
+    // func(std::move(custom)); // error: cannot bind non-const lvalue reference of type 'Custom&' to an rvalue of type 'Custom'
+
+    func_const(custom);
+    func_const(custom2);
+    func_const(custom3);
+    func_const(std::move(custom));  // const lvalue reference can bind to rvalue
+
+    std::cout << "main custom = " << custom << " from " << &custom << std::endl;
     return 0;
 }

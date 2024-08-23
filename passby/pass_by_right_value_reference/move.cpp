@@ -1,4 +1,4 @@
-#include <iostream>
+    #include <iostream>
 
 class Custom {
 public:
@@ -18,6 +18,7 @@ public:
 
     Custom(Custom&& custom) : value(custom.value) {
         std::cout << "Move constructor Custom(" << custom.value << "). this = " << this << " from " << &custom << std::endl;
+        custom.value = 0;
     }
 
     Custom& operator=(Custom&& custom) {
@@ -48,21 +49,27 @@ private:
     int value;
 };
 
-// #define print_stack_frame_addresses(func_name) \
-//     void* frame_address = __builtin_frame_address(0); \
-//     std::cout << "Function: " << func_name << std::endl;  \
-//     std::cout << "Frame address (FP): " << frame_address << std::endl; \
-//     std::cout << std::endl;
-
-Custom craeteCustom() {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = Custom(1);
+Custom createCustom() {
+    Custom custom = Custom(2);
     return custom;
 }
 
 int main(int argc, char* argv[]) {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = craeteCustom();
-    // std::cout << "main custom = " << custom << ".Address is " << &custom << std::endl;
+    std::cout << "construct custom" << std::endl;
+    Custom custom = Custom(1);
+
+    std::cout << "copy custom" << std::endl;
+    Custom custom2 = custom; // copy constructor
+
+    const Custom& custom3 = std::move(custom);  // no constructor called
+    Custom&& custom4 = std::move(custom);   // no constructor called
+    const Custom&& custom5 = std::move(custom); // no constructor called
+
+    std::cout << "move custom" << std::endl;
+    Custom custom6 = std::move(custom); // move constructor
+    Custom custom7 = createCustom(); // move constructor
+
+    std::cout << "main end" << std::endl;
     return 0;
 }
+    

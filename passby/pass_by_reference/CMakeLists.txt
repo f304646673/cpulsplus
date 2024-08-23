@@ -6,5 +6,3 @@ project(${ProjectName})
 
 # 添加可执行文件
 add_executable(${ProjectName} main.cpp)
-
-target_compile_options(${ProjectName} PRIVATE -fno-elide-constructors)

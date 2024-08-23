@@ -16,13 +16,17 @@ public:
         return *this;
     }
 
-    Custom(Custom&& custom) : value(custom.value) {
+    Custom(Custom&& custom) noexcept : value(custom.value) {
         std::cout << "Move constructor Custom(" << custom.value << "). this = " << this << " from " << &custom << std::endl;
+        custom.value = 0;
     }
 
     Custom& operator=(Custom&& custom) {
-        value = custom.value;
-        std::cout << "Move assignment operator Custom(" << custom.value << "). this = " << this << " from " << &custom << std::endl;
+        if (this != &custom) {
+            value = custom.value;
+            std::cout << "Move assignment operator Custom(" << custom.value << "). this = " << this << " from " << &custom << std::endl;
+            return *this;
+        }
         return *this;
     }
 
@@ -48,21 +52,29 @@ private:
     int value;
 };
 
-// #define print_stack_frame_addresses(func_name) \
-//     void* frame_address = __builtin_frame_address(0); \
-//     std::cout << "Function: " << func_name << std::endl;  \
-//     std::cout << "Frame address (FP): " << frame_address << std::endl; \
-//     std::cout << std::endl;
+void func(Custom&& custom) {
+    std::cout << "func(Custom custom) custom = " << custom << " from " << &custom << std::endl;
+}
 
-Custom craeteCustom() {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = Custom(1);
-    return custom;
+void func_const(const Custom&& custom) {
+    std::cout << "func(Custom custom) custom = " << custom << " from " << &custom << std::endl;
 }
 
 int main(int argc, char* argv[]) {
-    // print_stack_frame_addresses(__func__);
-    Custom custom = craeteCustom();
-    // std::cout << "main custom = " << custom << ".Address is " << &custom << std::endl;
+    Custom custom(1);
+    Custom& custom2 = custom;
+    const Custom& custom3 = custom;
+    // func(custom); // error: cannot bind rvalue reference of type 'Custom&&' to lvalue of type 'Custom'
+    // func(custom2); // error
+    // func(custom3); // error
+    func(std::move(custom));
+
+    Custom custom4 = std::move(custom); // move constructor
+
+    // func_const(custom); // error: cannot bind rvalue reference of type 'const Custom&&' to lvalue of type 'Custom'
+    // func_const(custom2); // error
+    // func_const(custom3); // error
+    func_const(std::move(custom));
+    std::cout << "main end" << std::endl;
     return 0;
 }
