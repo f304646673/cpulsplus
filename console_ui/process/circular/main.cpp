@@ -13,15 +13,15 @@ void printCircularProgress(int duration) {
     const string green = "\033[32m";  // 绿色
     const string reset = "\033[0m";   // 重置颜色
 
-    for (int step = 0; step <= steps; ++step) {
+    for (int step = 0; step <= steps; ++step) { // 逐步绘制进度指示器
         cout << "\033[2J\033[H"; // 清屏并将光标移动到左上角
 
-        for (int y = -radius; y <= radius; ++y) {
-            for (int x = -radius * aspectRatio; x <= radius * aspectRatio; ++x) {
-                if (x * x / (aspectRatio * aspectRatio) + y * y <= radius * radius) {
-                    double angle = atan2(y, x / aspectRatio) + M_PI;
-                    double progressAngle = 2 * M_PI * step / steps;
-                    if (angle <= progressAngle) {
+        for (int y = -radius; y <= radius; ++y) {   // 循环绘制圆形的每一行
+            for (int x = -radius * aspectRatio; x <= radius * aspectRatio; ++x) {   // 循环绘制圆形的每一列
+                if (x * x / (aspectRatio * aspectRatio) + y * y <= radius * radius) {   // 判断当前点是否在圆形内
+                    double angle = atan2(y, x / aspectRatio) + M_PI;    // 计算当前点的角度
+                    double progressAngle = 2 * M_PI * step / steps;    // 计算当前进度的角度
+                    if (angle <= progressAngle) {   // 判断当前点是否在进度范围内
                         cout << green << "@" << reset;
                     } else {
                         cout << red << "@" << reset;
