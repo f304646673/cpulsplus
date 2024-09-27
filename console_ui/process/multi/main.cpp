@@ -69,8 +69,7 @@ int main() {
     thread t3(updateProgress, progress, 2, duration * 3);
 
     // 创建一个线程打印进度条
-    // thread printer(printProgress, progress, barWidth);
-    printProgress(progress, barWidth);
+    thread printer(printProgress, progress, barWidth);
 
     // 等待所有线程完成
     t1.join();
