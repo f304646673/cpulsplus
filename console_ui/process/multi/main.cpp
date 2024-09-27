@@ -26,7 +26,7 @@ void printProgress(shared_ptr<vector<int>> progress, int barWidth) {
     cout << endl << endl << endl;
 
     while (true) {
-         cout << "\033[3F"; // 将光标移动到三行之前
+        cout << "\033[3F"; // 将光标移动到三行之前
         for (int id = 0; id < progress->size(); ++id) {
             cout << "Progress Bar " << id + 1 << ": [";
             for (int j = 0; j < (*progress)[id]; ++j) {
