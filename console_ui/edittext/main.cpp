@@ -83,8 +83,6 @@ int getch() {
         ch = getchar();
         if (ch == 91) { // 如果是'['键
             ch = getchar();
-            if (ch == 65) ch = 1000; // 上箭头键
-            if (ch == 66) ch = 1001; // 下箭头键
             if (ch == 67) ch = 1002; // 右箭头键
             if (ch == 68) ch = 1003; // 左箭头键
         }
@@ -119,15 +117,17 @@ int main() {
                 }
                 break;
             }
-        } else if (ch == 1000 || ch == 1001) { // 上箭头键或下箭头键
-            buttonIndex = (buttonIndex + 1) % 2;
         } else if (ch == 1002) { // 右箭头键
             if (!isButtonSelected && cursorPosition < inputText.size()) {
                 cursorPosition++;
+            } else if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
             }
         } else if (ch == 1003) { // 左箭头键
             if (!isButtonSelected && cursorPosition > 0) {
                 cursorPosition--;
+            } else if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
             }
         } else if (!isButtonSelected && ch >= 32 && ch <= 126 && inputText.size() < 16) { // 可打印字符，限制16个字符
             inputText.insert(cursorPosition, 1, ch);

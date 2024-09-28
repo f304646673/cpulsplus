@@ -54,7 +54,7 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
             cout << string(windowWidth - 4 - options[i].size(), ' ') << " |" << endl;
         }
     } else {
-        cout << string(windowHeight - 6 - 1, '\n'); // 空行
+        cout << string(startX, ' ') << "| " << string(windowWidth - 4, ' ') << " |" << endl;
     }
 
     // 打印按钮行
@@ -75,7 +75,7 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
     } else {
         cout << cancelButton;
     }
-    cout << string(windowWidth - totalButtonLength - padding - 2, ' ') << " |" << endl;
+    cout << string(windowWidth - totalButtonLength - padding - 2 - 2, ' ') << " |" << endl;
 
     // 打印底部边框
     cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
@@ -125,7 +125,12 @@ int main() {
                 isButtonSelected = true;
                 buttonIndex = 0; // 默认选择 OK 按钮
             } else if (isButtonSelected) {
-                buttonIndex = (buttonIndex + 1) % 2; // 在 OK 和 Cancel 按钮之间切换
+                if (buttonIndex == 1) {
+                    isButtonSelected = false;
+                    isDropdownSelected = true;
+                } else {
+                    buttonIndex = (buttonIndex + 1) % 2;
+                }
             }
         } else if (ch == 10 || ch == 13) { // Enter 键
             if (isDropdownSelected) {
@@ -142,14 +147,18 @@ int main() {
         } else if (ch == 1000) { // 上箭头键
             if (isDropdownOpen && selectedIndex > 0) {
                 selectedIndex--;
-            } else if (isButtonSelected && buttonIndex > 0) {
-                buttonIndex--;
             }
         } else if (ch == 1001) { // 下箭头键
             if (isDropdownOpen && selectedIndex < options.size() - 1) {
                 selectedIndex++;
-            } else if (isButtonSelected && buttonIndex < 1) {
-                buttonIndex++;
+            }
+        } else if (ch == 1002) { // 右箭头键
+            if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
+            }
+        } else if (ch == 1003) { // 左箭头键
+            if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
             }
         } else if (ch == 27) { // Esc 键退出
             cout << "\033[2J\033[H"; // 清空画面
