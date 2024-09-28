@@ -16,22 +16,22 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
     // 获取终端窗口大小
     struct winsize w;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &w);
-    int width = w.ws_col;
-    int height = w.ws_row;
+    int terminalWidth = w.ws_col;
+    int terminalHeight = w.ws_row;
 
-    // 计算菜单的宽度和高度
-    int menuWidth = 40; // 增加宽度
-    int menuHeight = 10; // 增加高度
+    // 窗口的宽度和高度
+    int windowWidth = 40;
+    int windowHeight = 10;
 
-    // 计算菜单的起始位置
-    int startX = (width - menuWidth) / 2;
-    int startY = (height - menuHeight) / 2;
+    // 计算窗口的起始位置
+    int startX = (terminalWidth - windowWidth) / 2;
+    int startY = (terminalHeight - windowHeight) / 2;
 
     cout << "\033[2J\033[H"; // 清屏并将光标移动到左上角
 
     // 打印顶部边框
     cout << string(startY, '\n');
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     // 打印下拉框行
     cout << string(startX, ' ') << "| ";
@@ -40,7 +40,7 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
     } else {
         cout << "[Select Option]";
     }
-    cout << string(menuWidth - 4 - 15, ' ') << " |" << endl;
+    cout << string(windowWidth - 4 - 15, ' ') << " |" << endl;
 
     // 打印下拉框选项
     if (isDropdownOpen) {
@@ -51,17 +51,17 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
             } else {
                 cout << options[i];
             }
-            cout << string(menuWidth - 4 - options[i].size(), ' ') << " |" << endl;
+            cout << string(windowWidth - 4 - options[i].size(), ' ') << " |" << endl;
         }
     } else {
-        cout << string(menuHeight - 6 - 1, '\n'); // 空行
+        cout << string(windowHeight - 6 - 1, '\n'); // 空行
     }
 
     // 打印按钮行
     string okButton = "[ OK ]";
     string cancelButton = "[Cancel]";
     int totalButtonLength = okButton.length() + cancelButton.length() + 2; // 2 spaces between buttons
-    int padding = (menuWidth - totalButtonLength) / 2;
+    int padding = (windowWidth - totalButtonLength) / 2;
 
     cout << string(startX, ' ') << "| " << string(padding, ' ');
     if (isButtonSelected && buttonIndex == 0) {
@@ -75,10 +75,10 @@ void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>&
     } else {
         cout << cancelButton;
     }
-    cout << string(menuWidth - totalButtonLength - padding - 2, ' ') << " |" << endl;
+    cout << string(windowWidth - totalButtonLength - padding - 2, ' ') << " |" << endl;
 
     // 打印底部边框
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     cout << reset; // 重置颜色
 }
@@ -95,10 +95,10 @@ int getch() {
         ch = getchar();
         if (ch == 91) { // 如果是'['键
             ch = getchar();
-            if (ch == 65) return 1000; // 上箭头键
-            if (ch == 66) return 1001; // 下箭头键
-            if (ch == 67) return 1002; // 右箭头键
-            if (ch == 68) return 1003; // 左箭头键
+            if (ch == 65) ch = 1000; // 上箭头键
+            if (ch == 66) ch = 1001; // 下箭头键
+            if (ch == 67) ch = 1002; // 右箭头键
+            if (ch == 68) ch = 1003; // 左箭头键
         }
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
