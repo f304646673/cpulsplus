@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void printMenu(bool isDropdownSelected, bool isDropdownOpen, const vector<string>& options, int selectedIndex, bool isButtonSelected, int buttonIndex) {
+void display(bool isDropdownSelected, bool isDropdownOpen, const vector<string>& options, int selectedIndex, bool isButtonSelected, int buttonIndex) {
     const string greenBackground = "\033[42m"; // 绿色背景
     const string redBackground = "\033[41m";   // 红色背景
     const string whiteText = "\033[37m";       // 白色字体
@@ -114,7 +114,7 @@ int main() {
     int buttonIndex = 0;
 
     while (true) {
-        printMenu(isDropdownSelected, isDropdownOpen, options, selectedIndex, isButtonSelected, buttonIndex);
+        display(isDropdownSelected, isDropdownOpen, options, selectedIndex, isButtonSelected, buttonIndex);
 
         int ch = getch();
         if (ch == 9) { // Tab 键
