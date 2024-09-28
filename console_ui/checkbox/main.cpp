@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void printMenu(const vector<string>& options, int selected, bool isButtonSelected, int buttonIndex) {
+void display(const vector<string>& options, int selected, bool isButtonSelected, int buttonIndex) {
     const string redBackground = "\033[41m"; // 红色背景
     const string greenBackground = "\033[42m"; // 绿色背景
     const string whiteText = "\033[37m";     // 白色字体
@@ -16,22 +16,22 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
     // 获取终端窗口大小
     struct winsize w;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &w);
-    int width = w.ws_col;
-    int height = w.ws_row;
+    int terminalWidth = w.ws_col;
+    int terminalHeight = w.ws_row;
 
     // 窗口的宽度和高度
-    int menuWidth = 40;
-    int menuHeight = options.size() + 8;
+    int windowWidth = 40;
+    int windowHeight = options.size() + 8;
 
     // 计算窗口的起始位置
-    int startX = (width - menuWidth) / 2;
-    int startY = (height - menuHeight) / 2;
+    int startX = (terminalWidth - windowWidth) / 2;
+    int startY = (terminalHeight - windowHeight) / 2;
 
     cout << "\033[2J\033[H"; // 清屏并将光标移动到左上角
 
     // 打印顶部边框
     cout << string(startY, '\n');
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     for (int i = 0; i < options.size(); ++i) {
         cout << string(startX, ' ') << "| ";
@@ -41,14 +41,14 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
         } else {
             cout << "  ";
         }
-        cout << options[i] << string(menuWidth - 6 - options[i].size(), ' ') << reset << " |" << endl;
+        cout << options[i] << string(windowWidth - 6 - options[i].size(), ' ') << reset << " |" << endl;
     }
 
     // 打印按钮行
     string okButton = "[ OK ]";
     string cancelButton = "[Cancel]";
     int totalButtonLength = okButton.length() + cancelButton.length() + 2; // 2 spaces between buttons
-    int padding = (menuWidth - totalButtonLength) / 2;
+    int padding = (windowWidth - totalButtonLength) / 2;
 
     cout << string(startX, ' ') << "| " << string(padding, ' ');
     if (isButtonSelected && buttonIndex == 0) {
@@ -62,10 +62,10 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
     } else {
         cout << cancelButton;
     }
-    cout << string(menuWidth - totalButtonLength - padding - 4, ' ') << " |" << endl;
+    cout << string(windowWidth - totalButtonLength - padding - 4, ' ') << " |" << endl;
 
     // 打印底部边框
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     cout << reset; // 重置颜色
 }
@@ -99,7 +99,7 @@ int main() {
     int buttonIndex = 0;
 
     while (true) {
-        printMenu(options, selected, isButtonSelected, buttonIndex);
+        display(options, selected, isButtonSelected, buttonIndex);
 
         int ch = getch();
         if (ch == 9) { // Tab 键
