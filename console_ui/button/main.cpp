@@ -74,8 +74,8 @@ int getch() {
         ch = getchar();
         if (ch == 91) { // 如果是'['键
             ch = getchar();
-            if (ch == 67) return 1000; // 向右箭头键
-            if (ch == 68) return 1001; // 向左箭头键
+            if (ch == 67) ch = 1000; // 向右箭头键
+            if (ch == 68) ch = 1001; // 向左箭头键
         }
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);

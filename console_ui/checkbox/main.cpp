@@ -19,11 +19,11 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
     int width = w.ws_col;
     int height = w.ws_row;
 
-    // 计算菜单的宽度和高度
-    int menuWidth = 40; // 增加宽度
-    int menuHeight = options.size() + 8; // 增加高度
+    // 窗口的宽度和高度
+    int menuWidth = 40;
+    int menuHeight = options.size() + 8;
 
-    // 计算菜单的起始位置
+    // 计算窗口的起始位置
     int startX = (width - menuWidth) / 2;
     int startY = (height - menuHeight) / 2;
 
@@ -82,8 +82,10 @@ int getch() {
         ch = getchar();
         if (ch == 91) { // 如果是'['键
             ch = getchar();
-            if (ch == 65) return 1000; // 上箭头键
-            if (ch == 66) return 1001; // 下箭头键
+            if (ch == 65) ch = 1000; // 上箭头键
+            if (ch == 66) ch = 1001; // 下箭头键
+            if (ch == 67) ch = 1002; // 右箭头键
+            if (ch == 68) ch = 1003; // 左箭头键
         }
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
@@ -102,7 +104,12 @@ int main() {
         int ch = getch();
         if (ch == 9) { // Tab 键
             if (isButtonSelected) {
-                buttonIndex = (buttonIndex + 1) % 2;
+                if (buttonIndex == 1) {
+                    isButtonSelected = false;
+                    selected = 0;
+                } else {
+                    buttonIndex = (buttonIndex + 1) % 2;
+                }
             } else {
                 if (selected == options.size() - 1) {
                     isButtonSelected = true;
@@ -132,23 +139,21 @@ int main() {
                     options[selected][options[selected].size() - 2] = 'X';
                 }
             }
-        } else if (ch == 1000) { // 上箭头键
-            if (isButtonSelected) {
-                isButtonSelected = false;
-                selected = options.size() - 1;
-            } else {
+        }  else if (ch == 1000) { // 上箭头键
+            if (!isButtonSelected) {
                 selected = (selected - 1 + options.size()) % options.size();
             }
         } else if (ch == 1001) { // 下箭头键
+            if (!isButtonSelected) {
+                selected = (selected + 1) % options.size();
+            }
+        } else if (ch == 1002) { // 右箭头键
             if (isButtonSelected) {
                 buttonIndex = (buttonIndex + 1) % 2;
-            } else {
-                if (selected == options.size() - 1) {
-                    isButtonSelected = true;
-                    buttonIndex = 0;
-                } else {
-                    selected = (selected + 1) % options.size();
-                }
+            }
+        } else if (ch == 1003) { // 左箭头键
+            if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
             }
         } else if (ch == 27) { // Esc 键退出
             break;
