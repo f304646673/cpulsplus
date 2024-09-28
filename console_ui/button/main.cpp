@@ -90,9 +90,7 @@ int main() {
         display(isButtonSelected, buttonIndex);
 
         int ch = getch();
-        if (ch == 9 || ch == 1001) { // Tab 键或下箭头键
-            buttonIndex = (buttonIndex + 1) % 2;
-        } else if (ch == 1000) { // 上箭头键
+        if (ch == 9 || ch == 1001 || ch == 1000) { // Tab 键或下箭头键或上箭头键
             buttonIndex = (buttonIndex + 1) % 2;
         } else if (ch == 10 || ch == 13) { // Enter 键
             if (buttonIndex == 0) { // OK 按钮

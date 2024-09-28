@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void printMenu(const vector<string>& options, int selected, bool isButtonSelected, int buttonIndex) {
+void display(const vector<string>& options, int selected, bool isButtonSelected, int buttonIndex) {
     const string redBackground = "\033[41m"; // 红色背景
     const string greenBackground = "\033[42m"; // 绿色背景
     const string whiteText = "\033[37m";     // 白色字体
@@ -16,22 +16,22 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
     // 获取终端窗口大小
     struct winsize w;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &w);
-    int width = w.ws_col;
-    int height = w.ws_row;
+    int terminalWidth = w.ws_col;
+    int terminalHeight = w.ws_row;
 
-    // 计算菜单的宽度和高度
-    int menuWidth = 40; // 增加宽度
-    int menuHeight = options.size() + 8; // 增加高度
+    // 窗口的宽度和高度
+    int windowWidth = 40;
+    int windowHeight = options.size() + 8;
 
-    // 计算菜单的起始位置
-    int startX = (width - menuWidth) / 2;
-    int startY = (height - menuHeight) / 2;
+    // 计算窗口的起始位置
+    int startX = (terminalWidth - windowWidth) / 2;
+    int startY = (terminalHeight - windowHeight) / 2;
 
     cout << "\033[2J\033[H"; // 清屏并将光标移动到左上角
 
     // 打印顶部边框
     cout << string(startY, '\n');
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     for (int i = 0; i < options.size(); ++i) {
         cout << string(startX, ' ') << "| ";
@@ -41,14 +41,14 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
         } else {
             cout << "  ";
         }
-        cout << options[i] << string(menuWidth - 6 - options[i].size(), ' ') << reset << " |" << endl;
+        cout << options[i] << string(windowWidth - 6 - options[i].size(), ' ') << reset << " |" << endl;
     }
 
     // 打印按钮行
     string okButton = "[ OK ]";
     string cancelButton = "[Cancel]";
     int totalButtonLength = okButton.length() + cancelButton.length() + 2; // 2 spaces between buttons
-    int padding = (menuWidth - totalButtonLength) / 2;
+    int padding = (windowWidth - totalButtonLength) / 2;
 
     cout << string(startX, ' ') << "| " << string(padding, ' ');
     if (isButtonSelected && buttonIndex == 0) {
@@ -62,10 +62,10 @@ void printMenu(const vector<string>& options, int selected, bool isButtonSelecte
     } else {
         cout << cancelButton;
     }
-    cout << string(menuWidth - totalButtonLength - padding - 4, ' ') << " |" << endl;
+    cout << string(windowWidth - totalButtonLength - padding - 4, ' ') << " |" << endl;
 
     // 打印底部边框
-    cout << string(startX, ' ') << "+" << string(menuWidth - 2, '-') << "+" << endl;
+    cout << string(startX, ' ') << "+" << string(windowWidth - 2, '-') << "+" << endl;
 
     cout << reset; // 重置颜色
 }
@@ -84,6 +84,8 @@ int getch() {
             ch = getchar();
             if (ch == 65) return 1000; // 上箭头键
             if (ch == 66) return 1001; // 下箭头键
+            if (ch == 67) return 1002; // 右箭头键
+            if (ch == 68) return 1003; // 左箭头键
         }
     }
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
@@ -97,12 +99,17 @@ int main() {
     int buttonIndex = 0;
 
     while (true) {
-        printMenu(options, selected, isButtonSelected, buttonIndex);
+        display(options, selected, isButtonSelected, buttonIndex);
 
         int ch = getch();
         if (ch == 9) { // Tab 键
             if (isButtonSelected) {
-                buttonIndex = (buttonIndex + 1) % 2;
+                if (buttonIndex == 1) {
+                    isButtonSelected = false;
+                    selected = 0;
+                } else {
+                    buttonIndex = (buttonIndex + 1) % 2;
+                }
             } else {
                 if (selected == options.size() - 1) {
                     isButtonSelected = true;
@@ -135,22 +142,20 @@ int main() {
                 }
             }
         } else if (ch == 1000) { // 上箭头键
-            if (isButtonSelected) {
-                isButtonSelected = false;
-                selected = options.size() - 1;
-            } else {
+            if (!isButtonSelected) {
                 selected = (selected - 1 + options.size()) % options.size();
             }
         } else if (ch == 1001) { // 下箭头键
+            if (!isButtonSelected) {
+                selected = (selected + 1) % options.size();
+            }
+        } else if (ch == 1002) { // 右箭头键
             if (isButtonSelected) {
                 buttonIndex = (buttonIndex + 1) % 2;
-            } else {
-                if (selected == options.size() - 1) {
-                    isButtonSelected = true;
-                    buttonIndex = 0;
-                } else {
-                    selected = (selected + 1) % options.size();
-                }
+            }
+        } else if (ch == 1003) { // 左箭头键
+            if (isButtonSelected) {
+                buttonIndex = (buttonIndex + 1) % 2;
             }
         } else if (ch == 27) { // Esc 键退出
             break;
