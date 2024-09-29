@@ -104,8 +104,13 @@ int main() {
         if (ch == 9) { // Tab 键
             if (!isButtonSelected) {
                 isButtonSelected = true;
+                buttonIndex = 0;
             } else {
-                buttonIndex = (buttonIndex + 1) % 2;
+                if (buttonIndex == 1) {
+                    isButtonSelected = false;
+                } else {
+                    buttonIndex = (buttonIndex + 1) % 2;
+                }
             }
         } else if (ch == 10 || ch == 13) { // Enter 键
             if (isButtonSelected) {
